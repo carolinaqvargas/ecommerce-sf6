@@ -37,21 +37,21 @@
 				{% if app.user %}
                     {% if is_granted('ROLE_PRODUCT_ADMIN') %}
                         <li class="nav-item">
-                            {# <a class="nav-link" href="{{ path('admin_index') }}">Administration</a> #}
+                             <a class="nav-link"  href="{{ path('admin_index') }}"  >Administration</a> 
                         </li>
                     {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="#">Mon compte</a>
                     </li>
                     <li class="nav-item">
-                        {# <a class="nav-link" href="{{ path('app_logout') }}">Me déconnecter</a> #}
+                        <a class="nav-link" href="{{ path('app_logout') }}"  >Me déconnecter</a> 
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        {# <a class="nav-link" href="{{ path('app_register') }}">M'inscrire</a> #}
+                        <a class="nav-link"  href="{{ path('app_register') }}"  >M'inscrire</a> 
                     </li>
                     <li class="nav-item">
-                        {# <a class="nav-link" href="{{ path('app_login') }}">Me Connecter</a> #}
+                        <a class="nav-link"   href="{{ path('app_login') }}"  >Me Connecter</a> 
                     </li>
 				{% endif %}
 			</ul>
