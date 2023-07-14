@@ -16,7 +16,7 @@ class Coupons
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length:10, unique: true)]
+    #[ORM\Column(length: 10, unique: true)]
     private ?string $code = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -28,7 +28,7 @@ class Coupons
     #[ORM\Column]
     private ?int $max_usage = null;
 
-   
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $validity = null;
 
@@ -48,6 +48,7 @@ class Coupons
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+        $this->created_at = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
