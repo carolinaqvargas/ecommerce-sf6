@@ -22,9 +22,9 @@ class ProductsController extends AbstractController
     #[Route('/{slug}', name: 'details')]
     public function details(Products $product): Response
     {
-        dd($product);
+        //dd($product);
         return $this->render('products/details.html.twig', [
-            'controller_name' => 'ProductsController',
+            'product' => $product,
         ]);
     }
 }
