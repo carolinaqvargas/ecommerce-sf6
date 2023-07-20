@@ -23,6 +23,7 @@ class ProductsController extends AbstractController
     public function details(Products $product): Response
     {
         //dd($product);
+
         return $this->render('products/details.html.twig', [
             'product' => $product,
         ]);
