@@ -71,13 +71,48 @@ class ProductsController extends AbstractController
     }
 
     #[Route('/edition/{id}', name: 'edit')]
-    public function edit(Products $product): Response
+    public function edit(Products $product, Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
         // On vérifie si l'utilisateur peut éditer avec le Voter
         $this->denyAccessUnlessGranted('PRODUCT_EDIT', $product);
 
-        return $this->render('admin/products/edition.html.twig');
+        // On crée le formulaire
+        $productForm = $this->createForm(ProductsFormType::class, $product);
+
+        return $this->render('admin/products/add.html.twig', [
+            'productForm' => $productForm,
+        ]);
+
+        // On traite la requête du formulaire
+        $productForm->handleRequest($request);
+
+        //dd($productForm)
+
+        //On vérifie si le formulaire est soumis ET valide
+        if ($productForm->isSubmitted() && $productForm->isValid()) {
+
+            // On génère le slug
+            $slug = $slugger->slug($product->getName());   //dd($lug)
+            $product->setSlug($slug);
+
+            //On arrondit le prix 
+            $prix = $product->getPrice() * 100;
+            $product->setPrice($prix);
+
+            // On stocke
+            $em->persist($product);
+            $em->flush();
+
+            // $this->addFlash('success', 'Produit ajouté avec succès');
+
+            // On redirige
+            return $this->redirectToRoute('admin_products_index');
+
+
+
+        return $this->render('admin/products/edit.html.twig');
     }
+}
 
     #[Route('/suppression/{id}', name: 'delete')]
     public function delete(Products $product): Response
