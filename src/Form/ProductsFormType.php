@@ -34,17 +34,17 @@ class ProductsFormType extends AbstractType
             ->add('stock', options: [
                 'label' => 'Unités en stock'
             ])
-            //     ->add('categories', EntityType::class, [
-            //         'class' => Categories::class,
-            //         'choice_label' => 'name',
-            //         'label' => 'Catégorie',
-            //         'group_by' => 'parent.name',
-            //         'query_builder' => function(CategoriesRepository $cr){
-            //             return $cr->createQueryBuilder('c')
-            //                 ->where('c.parent IS NOT NULL')
-            //                 ->orderBy('c.name', 'ASC');
-            //         }
-            //     ])
+                ->add('categories', EntityType::class, [
+                    'class' => Categories::class,
+                    'choice_label' => 'name',
+                    'label' => 'Catégorie',
+                    'group_by' => 'parent.name',
+                    'query_builder' => function(CategoriesRepository $cr){
+                        return $cr->createQueryBuilder('c')
+                            ->where('c.parent IS NOT NULL')
+                            ->orderBy('c.name', 'ASC');
+                    }
+                ])
         ;
     }
 
