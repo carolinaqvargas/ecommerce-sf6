@@ -15,14 +15,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-#[Route('/admin/produits', name: 'admin_products_')]
+#[Route('/admin/products', name: 'admin_products_')]
 class ProductsController extends AbstractController
 {
     #[Route('/', name: 'index')]
     public function index(ProductsRepository $productsRepository): Response
     {
-        $produits = $productsRepository->findAll();
-        return $this->render('admin/products/index.html.twig', compact('produits'));
+        $products = $productsRepository->findAll();
+        return $this->render('admin/products/index.html.twig', compact('products'));
     }
 
     #[Route('/ajout', name: 'add')]
@@ -48,7 +48,7 @@ class ProductsController extends AbstractController
 
         //On vérifie si le formulaire est soumis ET valide
         if ($productForm->isSubmitted() && $productForm->isValid()) {
-           
+
             // On génère le slug
             $slug = $slugger->slug($product->getName());   //dd($lug)
             $product->setSlug($slug);
@@ -66,8 +66,6 @@ class ProductsController extends AbstractController
             // On redirige
             return $this->redirectToRoute('admin_products_index');
         }
-
-     
     }
 
     #[Route('/edition/{id}', name: 'edit')]
@@ -76,26 +74,24 @@ class ProductsController extends AbstractController
         // On vérifie si l'utilisateur peut éditer avec le Voter
         $this->denyAccessUnlessGranted('PRODUCT_EDIT', $product);
 
+        //On divise le prix par 100
+        $prix = $product->getPrice() / 100;
+        $product->setPrice($prix);
+
         // On crée le formulaire
         $productForm = $this->createForm(ProductsFormType::class, $product);
 
-        return $this->render('admin/products/add.html.twig', [
-            'productForm' => $productForm,
-        ]);
-
         // On traite la requête du formulaire
         $productForm->handleRequest($request);
-
-        //dd($productForm)
 
         //On vérifie si le formulaire est soumis ET valide
         if ($productForm->isSubmitted() && $productForm->isValid()) {
 
             // On génère le slug
-            $slug = $slugger->slug($product->getName());   //dd($lug)
+            $slug = $slugger->slug($product->getName());
             $product->setSlug($slug);
 
-            //On arrondit le prix 
+            // On arrondit le prix 
             $prix = $product->getPrice() * 100;
             $product->setPrice($prix);
 
@@ -103,16 +99,18 @@ class ProductsController extends AbstractController
             $em->persist($product);
             $em->flush();
 
-            // $this->addFlash('success', 'Produit ajouté avec succès');
+            $this->addFlash('success', 'Produit modifié avec succès');
 
             // On redirige
             return $this->redirectToRoute('admin_products_index');
+        }
 
 
-
-        return $this->render('admin/products/edit.html.twig');
+        return $this->render('admin/products/edit.html.twig', [
+            'productForm' => $productForm->createView(),
+            'product' => $product
+        ]);
     }
-}
 
     #[Route('/suppression/{id}', name: 'delete')]
     public function delete(Products $product): Response
