@@ -3,9 +3,9 @@
 namespace App\Security\Voter;
 
 use App\Entity\Products;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class ProductsVoter extends Voter
@@ -38,7 +38,7 @@ class ProductsVoter extends Voter
     {
         // On récupère l'utilisateur à partir du token
         $user = $token->getUser();
-
+       
         if (!$user instanceof UserInterface) return false;  //si le user n'est pas connecté, je return false
 
         // On vérifie si l'utilisateur est admin
@@ -50,19 +50,19 @@ class ProductsVoter extends Voter
                 // On vérifie si l'utilisateur peut éditer
                 return $this->canEdit();
                 break;
-            case self::DELETE:
-                // On vérifie si l'utilisateur peut supprimer
-                return $this->canDelete();
-                break;
-        }
+        //     case self::DELETE:
+        //         // On vérifie si l'utilisateur peut supprimer
+        //         return $this->canDelete();
+        //         break;
+        } return false;
     }
 
     private function canEdit()
     {
         return $this->security->isGranted('ROLE_PRODUCT_ADMIN');
     }
-    private function canDelete()
-    {
-        return $this->security->isGranted('ROLE_ADMIN');
-    }
+    // private function canDelete()
+    // {
+    //     return $this->security->isGranted('ROLE_ADMIN');
+    // }
 }
